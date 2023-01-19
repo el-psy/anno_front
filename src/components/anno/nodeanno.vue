@@ -23,16 +23,16 @@
 </template>
 
 <script lang="ts" setup>
-	import { defineProps, defineEmits, computed, ref, onMounted, onUnmounted } from 'vue';
+	import { defineProps, defineEmits, computed, ref, Ref, onMounted, onUnmounted } from 'vue';
 	import { ElNotification } from 'element-plus';
 
 	let props = defineProps(['data', 'task_base'])
 	// let {data, task_base} = props
 	let emit = defineEmits(['change'])
 
-	let tag_color: any = {}
+	let tag_color: Ref<any> = ref({})
 	for(let tag of props.task_base.tags){
-		tag_color[tag['name']] = tag['color']
+		tag_color.value[tag['name']] = tag['color']
 	}
 	let tag_key: any = Array.from('1234567890qwertyuiopasdfghjklzxcvbnm')
 	let key_tag: any = {}
@@ -44,7 +44,7 @@
 	let render_tags = computed(()=>{
 		let res: any[] = []
 		for(let key in key_tag){
-			let buff = {key: key, name: key_tag[key], color: tag_color[key_tag[key]]}
+			let buff = {key: key, name: key_tag[key], color: tag_color.value[key_tag[key]]}
 			res.push(buff)
 		}
 		return res
@@ -101,7 +101,7 @@
 					})
 					return 
 				}
-				buff[index]['color'] = tag_color[tag['type']]
+				buff[index]['color'] = tag_color.value[tag['type']]
 			}
 		}
 		let res = []

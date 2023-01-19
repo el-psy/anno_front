@@ -70,7 +70,7 @@
 				</ul>
 			</div>
 			<div class="anno-core">
-				<Anno_com :data="anno_data[current_index]" :task_base="task_base" @change="anno_change"></Anno_com>
+				<Component :is="anno_name" :data="anno_data[current_index]" :task_base="task_base" @change="anno_change"></Component>
 			</div>
 			<div class="anno-footer">
 				<el-pagination
@@ -93,8 +93,9 @@
 <script lang="ts" setup>
 	import { useRoute } from 'vue-router';
 	import { useStore } from '../stores';
-	import { inject, ref, Ref, computed, watch, nextTick } from 'vue';
+	import { inject, ref, Ref, computed, watch, nextTick, shallowRef } from 'vue';
 	import Boolean from './boolean.vue'
+	import Simple from './anno/simple.vue'
 	import Node_anno from './anno/nodeanno.vue';
 	import Rel_anno from './anno/relationanno.vue'
 	import Sencla_anno from './anno/senclassfier.vue'
@@ -131,6 +132,14 @@
 	})
 
 	let task_base = ref({'type':'', 'tags':''})
+	let anno: any = {
+		'simple': Simple,
+		'node': Node_anno,
+		'relation':Rel_anno,
+		'sentence_classifier':Sencla_anno,
+		'text_generation':Textgen_anno
+	}
+	let anno_name = shallowRef(Simple)
 	let init = async function(){
 		let res = await axios.post('/anno/get', {
 			task_name: taskname
@@ -145,18 +154,10 @@
 		// console.log(res)
 		task_base.value = res.data.data
 		task_base.value.tags = JSON.parse(task_base.value.tags)
+		console.log('task_base', task_base)
+		anno_name.value = anno[task_base.value['type']]
 	}
 	init()
-
-	let anno: any = {
-		'node': Node_anno,
-		'relation':Rel_anno,
-		'sentence_classifier':Sencla_anno,
-		'text_generation':Textgen_anno
-	}
-	let Anno_com = computed(()=>{
-		return anno[task_base.value['type']]
-	})
 
 	const current_page = ref(1)
 	const page_size = ref(20)

@@ -137,15 +137,15 @@
 	let relation_name = ref('')
 	let relation_color = ref('#3B82F6')
 	let relation_nodes_add = function(node: any){
-		for(let item of relation_nodes.value){
-			if(item.name == node.name){
-				ElNotification({
-					title:'添加标签失败',
-					message: '标签重复'
-				})
-				return
-			}
-		}
+		// for(let item of relation_nodes.value){
+		// 	if(item.name == node.name){
+		// 		ElNotification({
+		// 			title:'添加标签失败',
+		// 			message: '标签重复'
+		// 		})
+		// 		return
+		// 	}
+		// }
 		if(relation_nodes.value.length<2){
 			relation_nodes.value.push(node)
 		}else {

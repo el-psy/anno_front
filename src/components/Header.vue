@@ -1,13 +1,13 @@
 <template>
 	<header>
-		<div>
+		<div class="header-left">
 			<RouterLink to="/">
 				<span class="username">{{store.username}}</span>
 			</RouterLink>
-			<span class="userrole">{{store.actor}}</span>
+			<span class="userrole">用户类型: {{store.actor}}</span>
 			<template v-if="getRole()=='plain'">
-				<RouterLink to="/anno/task">标注任务</RouterLink>
-				<RouterLink :to="'/anno/data/'+store.taskname">标注</RouterLink>
+				<RouterLink to="/anno/task" class="button">标注任务</RouterLink>
+				<RouterLink :to="'/anno/data/'+store.taskname" class="button">标注</RouterLink>
 			</template>
 		</div>
 		<el-button type="danger" plain @click="logout">Logout</el-button>
@@ -49,8 +49,21 @@
 	}
 	span.username {
 		font-size: 24px;
+		margin-right: 16px;
 	}
-
+	span.userrole {
+		margin-right: 16px;
+	}
+	header div.header-left a.button {
+		height: 100%;
+		padding: 16px;
+		color: #f56c6c;
+	}
+	header div.header-left a.button:hover {
+		background-color: rgba(90, 114, 189, 0.5);
+    	backdrop-filter: blur(2px);
+		color: #f56c6c;
+	}
 	button {
 		background: transparent;
 	}

@@ -22,7 +22,7 @@
 	import { type_name } from '../file';
 	import nodestastic from './nodestastic.vue'
 	import relationstastic from './relationstastic.vue';
-	import senclassfier from '../anno/senclassfier.vue';
+	import senclassfier from './senclastastic.vue';
 	import textgenstastic from './textgenstastic.vue';
 
 	let axios: any = inject('axios')
@@ -59,6 +59,8 @@
 		if(res.status == 200){
 			taskdata.value = res.data['anno_data']
 		}
+
+		console.log(props.taskname)
 	}
 	init()
 </script>

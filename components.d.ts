@@ -43,6 +43,7 @@ declare module '@vue/runtime-core' {
     RouterView: typeof import('vue-router')['RouterView']
     Senclassfier: typeof import('./src/components/anno/senclassfier.vue')['default']
     Senclastastic: typeof import('./src/components/stastic/senclastastic.vue')['default']
+    Simple: typeof import('./src/components/anno/simple.vue')['default']
     Stastic: typeof import('./src/components/stastic/index.vue')['default']
     Taginput: typeof import('./src/components/taginput.vue')['default']
     Taskcontainer: typeof import('./src/components/taskcontainer.vue')['default']

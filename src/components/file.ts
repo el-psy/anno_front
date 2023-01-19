@@ -71,7 +71,7 @@ let file_validation: any = {
 		'structure':'{\n'+
 		'    "sen": 句子内容,\n'+
 		'    "nodes":[ 节点内容\n'+
-		'        {'+
+		'        {\n'+
 		'            "type":标签类型,\n'+
 		'            "start":起始索引,\n'+
 		'            "end":终点索引\n'+
@@ -92,28 +92,37 @@ let file_validation: any = {
 			})
 			for(let sen_item of data){
 				if(!sen_item.sen || typeof(sen_item.sen)!='string'){
+					// console.log('sen_item.sen', sen_item)
 					return false
 				}
 				for(let node_item of sen_item['nodes']){
-					// if(!node_item.type || !node_item.start || !node_item.tags.end){
-					// 	return false
-					// }
 					if(typeof(node_item.type)!=='string' || typeof(node_item.start)!='number' || typeof(node_item.end)!='number' || node_item.start>=node_item.end || node_item.end > sen_item.sen.length){
+						// console.log('node', sen_item)
 						return false
 					}
 					if(!(node_tags.includes(node_item.type))){
+						// console.log('node_type', sen_item)
 						return false
 					}
 				}
+				if(!sen_item['relation']){
+					continue
+				}
 				for(let rel_item of sen_item['relation']){
 					let mark = true
-					let rel_no1_no2 = [rel_item['type'], sen_item['nodes'][rel_item['node_1']], sen_item['nodes'][rel_item['node_2']]]
+					let rel_no1_no2 = [rel_item['type'], sen_item['nodes'][rel_item['node_1']]['type'], sen_item['nodes'][rel_item['node_2']]['type']  ]
 					for(let rel of relation_tags){
 						if(rel_no1_no2[0] == rel[0] && rel_no1_no2[1] == rel[1] && rel_no1_no2[2] == rel[2]){
 							mark = false
 						}
+						if(rel_no1_no2[0] == rel[0] && rel_no1_no2[2] == rel[1] && rel_no1_no2[1] == rel[2]){
+							mark = false
+						}
 					}
 					if(mark){
+						// console.log(relation_tags)
+						// console.log(rel_no1_no2)
+						// console.log('rel', sen_item)
 						return false
 					}
 				}
@@ -125,16 +134,31 @@ let file_validation: any = {
 			for(let index in data){
 				res.push({
 					id:parseInt(index),
-					sen:data[index].sen,
-					nodes:data[index].nodes,
-					relation:data[index].relation||[]
+					// sen:data[index].sen,
+					// nodes:data[index].nodes,
+					// relation:data[index].relation||[]
+					sen:JSON.stringify({
+						'sen': data[index].sen,
+						'nodes': data[index].nodes
+					}),
+					tag:JSON.stringify(data[index].relation || [])
 				})
 			}
 			return res
 		},
 		'export': function(data: any){
-			let res: any[] = []
-			return data
+			let res : any[] = []
+			for(let index in data){
+				// console.log(data[index])
+				let buff = JSON.parse(data[index]['letters'])
+				res.push({
+					sen:buff['sen'],
+					nodes:buff['nodes'],
+					relation:JSON.parse(data[index]['annos']),
+					// tag:data[index].tag || ''
+				})
+			}
+			return res
 		}
 	},
 	'sentence_classifier':{
@@ -146,9 +170,13 @@ let file_validation: any = {
 			tags = tags.map((item: any)=> item.name)
 			for(let item of data){
 				if(!item.sen || typeof(item.sen)!='string'){
+					console.log('sen', item)
 					return false
 				}
-				if(typeof(item.tag)!='string' || !(tags.includes(item.tag))){
+				// console.log(Object.hasOwn(item, 'tag'))
+				if(Object.hasOwn(item, 'tag') && (typeof(item.tag)!='string' || !(tags.includes(item.tag)))){
+					// console.log('tag', item)
+					// console.log(typeof(item.tag), item.tag, Object.hasOwn(item, 'tag'))
 					return false
 				}
 			}
@@ -158,16 +186,22 @@ let file_validation: any = {
 			let res : any[] = []
 			for(let index in data){
 				res.push({
-					id:parseInt(index),
 					sen:data[index].sen,
-					tags:JSON.stringify(data[index].tag) || ''
+					tag:data[index].tag || ''
 				})
 			}
 			return res
 		},
 		'export': function(data: any){
 			let res: any[] = []
-			return data
+			for(let index in data){
+				let item = data[index]
+				res.push({
+					sen: item['letters'],
+					tags: item['annos']
+				})
+			}
+			return res
 		}
 	},
 	'text_generation':{
@@ -189,14 +223,21 @@ let file_validation: any = {
 				res.push({
 					id:index,
 					sen:data[parseInt(index)].sen,
-					tags:data[index].tags||''
+					tag:data[index].tag||''
 				})
 			}
 			return res
 		},
 		'export': function(data: any){
 			let res: any[] = []
-			return data
+			for(let index in data){
+				let item = data[index]
+				res.push({
+					sen: item['letters'],
+					tags: item['annos']
+				})
+			}
+			return res
 		}
 	},
 }

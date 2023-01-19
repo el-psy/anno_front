@@ -6,9 +6,7 @@
 			<main>
 					<!-- <RouterView></RouterView> -->
 					<RouterView v-slot="{ Component }">
-						<KeepAlive>
-							<component :is="Component" />
-						</KeepAlive>
+						<component :is="Component" />
 					</RouterView>
 			</main>
 		</div>
